@@ -13,11 +13,11 @@ Follow these steps to get a copy of the project running on your local machine
 You will need a Windows, Mac, or Linux based operating system and access to the internet in order to run this project.
 Additionally, the project will not function properly without the following:
 
-* [Google fonts] (http://fonts.googleapis.com/)
-* [Google javascript API] (http://google.com/jsapi)
-* [jQuery library] (https://jquery.com/)
-* [Handlebars templating] (https://handlebarsjs.com/)
-* and [Jasmine testing] (http://jasmine.github.io/)
+* [Google fonts](http://fonts.googleapis.com/)
+* [Google javascript API](http://google.com/jsapi)
+* [jQuery library](https://jquery.com/)
+* [Handlebars templating](https://handlebarsjs.com/)
+* and [Jasmine testing](http://jasmine.github.io/)
 
  Jasmine is included with the project files. All others are accessed through external links (an external stylesheet in the case of Google Fonts, external scripts for all others.)
 
