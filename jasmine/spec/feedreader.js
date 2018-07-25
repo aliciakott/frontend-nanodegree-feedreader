@@ -32,7 +32,7 @@ $(function() {
         it('has URLs defined', function() {
             allFeeds.forEach(function(feed) {
                 expect(feed.url).toBeDefined();
-                expect(feed.url).not.toBeFalsy();
+                expect(feed.url).not.toBe('');
             });
         });
 
@@ -42,7 +42,7 @@ $(function() {
         it('has names defined', function() {
             allFeeds.forEach(function(feed) {
                 expect(feed.name).toBeDefined();
-                expect(feed.name).not.toBeFalsy();
+                expect(feed.name).not.toBe('');
             });
         });
     });
@@ -104,23 +104,24 @@ $(function() {
         // nested callback again and collecting the first .entry element again.
         // It then compares the two.
         beforeEach(function(done) {
-            $('.feed .entry').each(function() {
-            oldEntries.push(this.innerHTML);
+            loadFeed(0, function() {
+              $('.feed .entry').each(function() {
+              oldEntries.push(this.innerHTML);
+              });
+              
+              loadFeed(1, done);
             });
-
-            loadFeed(0, loadFeed(1));
-            setTimeout(function() {
-                done();
-            }, 2000);
         });
 
-        it('changes feed content', function() {
+        it('changes feed content', function(done) {
             $('.feed .entry').each(function() {
             newEntries.push(this.innerHTML);
             });
 
             var checkMatch = (oldEntries[0] == newEntries[0]) ? true:false;
+            console.log(oldEntries[0], newEntries[0]);
             expect(checkMatch).toBe(false);
+            done();
         });
     });
 
