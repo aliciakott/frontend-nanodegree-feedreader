@@ -26,120 +26,110 @@ $(function() {
             expect(allFeeds.length).not.toBe(0);
         });
 
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
-         */
+        // The `loadFeed` function depends on an array of objects. The following
+        // checks that each object in the array has a name property defined, and
+        // that the value of that property is not empty
         it('has URLs defined', function() {
             allFeeds.forEach(function(feed) {
                 expect(feed.url).toBeDefined();
-                expect(feed.url).not.toBe(false);
+                expect(feed.url).not.toBeFalsy();
             });
         });
 
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
-         */
+        // The `loadFeed` function depends on an array of objects. The following
+        // checks that each object in the array has a URL property defined, and
+        // that the value of that property is not empty
         it('has names defined', function() {
             allFeeds.forEach(function(feed) {
                 expect(feed.name).toBeDefined();
-                expect(feed.name).not.toBe(false);
+                expect(feed.name).not.toBeFalsy();
             });
         });
     });
 
 
-    /* TODO: Write a new test suite named "The menu" */
+
     describe('The menu', function() {
 
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
-         */
+        // This test verifys that the menu is hidden by default by checking
+        // for the .menu-hidden class
         it('is hidden by default', function() {
             var hidden = $('body').hasClass('menu-hidden');
             expect(hidden).toBe(true);
         });
 
-         /* TODO: Write a test that ensures the menu changes
-          * visibility when the menu icon is clicked. This test
-          * should have two expectations: does the menu display when
-          * clicked and does it hide when clicked again.
-          */
-         it('toggles visibility when icon is clicked', function() {
+        it('toggles visibility when icon is clicked', function() {
+            // triggers click event, which should toggle off .menu-hidden class
+            // and show menu
             $('.menu-icon-link').trigger('click');
             var hidden = $('body').hasClass('menu-hidden');
             expect(hidden).toBe(false);
 
+            // triggers click event, which should toggle on .menu-hidden class
+            // and hide the menu
             $('.menu-icon-link').trigger('click');
             hidden = $('body').hasClass('menu-hidden');
             expect(hidden).toBe(true);
         });
     });
 
-    describe('Feed Functionality', function() {
+
+    describe('Initial Entries', function() {
+
+        // This test makes sure that when loadFeed runs, there is at least a
+        // single .entry element within the .feed container.
         var entries = [];
         beforeEach(function(done) {
             loadFeed(0);
             setTimeout(function() {
-              done();
+                done();
             }, 1000);
         });
 
-    /* TODO: Write a new test suite named "Initial Entries" */
-        describe('Initial Entries', function() {
-
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
-         * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test will require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
-         */
-            it('should create new .entry DOM element', function() {
-                this.entries = $('.entry').toArray();
-                expect(this.entries.length).not.toBe(0);
-            });
-        });
-
-    /* TODO: Write a new test suite named "New Feed Selection" */
-        describe('New Feed Selection', function() {
-            var oldEntries = [];
-            var newEntries = [];
-
-            beforeEach(function(done) {
-                $('.entry').each(function() {
-                oldEntries.push(this.innerHTML);
-                });
-
-                loadFeed(1);
-                setTimeout(function() {
-                    done();
-                }, 3000);
-            });
-
-
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
-            it('changes feed content', function() {
-                $('.entry').each(function() {
-                newEntries.push(this.innerHTML);
-                });
-
-                var checkMatch = (oldEntries[0] == newEntries[0]) ? true:false;
-                expect(checkMatch).toBe(false);
-            });
+        it('should create new .entry DOM element', function() {
+            this.entries = $('.feed .entry').toArray();
+            expect(this.entries.length).not.toBe(0);
         });
     });
 
+
+
+    describe('New Feed Selection', function() {
+        var oldEntries = [];
+        var newEntries = [];
+
+        // This test makes sure that the content actually changes when the
+        // loadFeed function is called. It does this by first collecting the
+        // contents of the first .entry element, then running loadFeed in a
+        // nested callback again and collecting the first .entry element again.
+        // It then compares the two.
+        beforeEach(function(done) {
+            $('.feed .entry').each(function() {
+            oldEntries.push(this.innerHTML);
+            });
+
+            loadFeed(0, loadFeed(1));
+            setTimeout(function() {
+                done();
+            }, 2000);
+        });
+
+        it('changes feed content', function() {
+            $('.feed .entry').each(function() {
+            newEntries.push(this.innerHTML);
+            });
+
+            var checkMatch = (oldEntries[0] == newEntries[0]) ? true:false;
+            expect(checkMatch).toBe(false);
+        });
+    });
+
+
+
     describe('Error handling', function() {
 
+        // If the argument is ommitted, or non-numerical, loadFeed should throw an error
         it('throws an error when argument is non-numerical or ommitted', function() {
-
             var testStringValue = function() {
                 loadFeed('x');
             };
@@ -148,6 +138,7 @@ $(function() {
             expect(loadFeed).toThrow();
         });
 
+        // Out-of-bound array access should cause loadFeed to throw an error
         it('throws an error when argument is greater than or equal to array.length', function() {
             var testOuterValue = function() {
                 loadFeed(allFeeds.length);
@@ -156,6 +147,7 @@ $(function() {
             expect(testOuterValue).toThrow();
         });
 
+        // Any non-negative number less than allFeeds.length, passed as argument in loadFeed should not throw an error
         it('does NOT throw an error for all non-negative values less than array.length', function() {
             for (var i = 0; i < allFeeds.length; i++) {
                 var testInnerValue = function() {

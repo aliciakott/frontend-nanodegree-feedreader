@@ -49,11 +49,11 @@ expect(allFeeds.length).not.toBe(0);
 
 allFeeds.forEach(function(feed) {
     expect(feed.url).toBeDefined();
-    expect(feed.url).not.toBe(false);
+    expect(feed.url).not.toBeFalsy();
 });
 allFeeds.forEach(function(feed) {
     expect(feed.name).toBeDefined();
-    expect(feed.name).not.toBe(false);
+    expect(feed.name).not.toBeFalsy();
 });
 ```
 The `loadFeed` function depends on an array of objects, `allFeeds`. These tests verify that 1. the `allFeeds` array has been defined, 2. it is not empty, and 3. that every object in the array has both a name and URL property defined. Without these properties defined, `loadFeed` will throw an error.
@@ -76,18 +76,15 @@ expect(hidden).toBe(true);
 These tests verify first that the menu is hidden by default, and that clicking the menu icon triggers the event listener which changes the visibility of the menu.
 
 
-### Feed Functionality
-
-
-#### Initial Entries
+### Initial Entries
 
 ```
-this.entries = $('.entry').toArray();
+this.entries = $('.feed .entry').toArray();
 expect(this.entries.length).not.toBe(0);
 ```
 This test makes sure that when `loadFeed` runs, there is at least a single `.entry` element within the `.feed` container.
 
-#### New Feed Selection
+### New Feed Selection
 
 ```
 var checkMatch = (oldEntries[0] == newEntries[0]) ? true:false;
