@@ -80,15 +80,12 @@ $(function() {
         // single .entry element within the .feed container.
         var entries = [];
         beforeEach(function(done) {
-            loadFeed(0);
-            setTimeout(function() {
-                done();
-            }, 1000);
+            loadFeed(0, done);
         });
 
         it('should create new .entry DOM element', function() {
-            this.entries = $('.feed .entry').toArray();
-            expect(this.entries.length).not.toBe(0);
+            entries = $('.feed .entry').toArray();
+            expect(entries.length).not.toBe(0);
         });
     });
 
@@ -106,22 +103,22 @@ $(function() {
         beforeEach(function(done) {
             loadFeed(0, function() {
               $('.feed .entry').each(function() {
-              oldEntries.push(this.innerHTML);
+              oldEntries.push(this.innerText);
               });
-              
+
               loadFeed(1, done);
             });
         });
 
-        it('changes feed content', function(done) {
+        it('changes feed content', function() {
             $('.feed .entry').each(function() {
-            newEntries.push(this.innerHTML);
+            newEntries.push(this.innerText);
             });
 
-            var checkMatch = (oldEntries[0] == newEntries[0]) ? true:false;
-            console.log(oldEntries[0], newEntries[0]);
-            expect(checkMatch).toBe(false);
-            done();
+            for (var i = 0; i < oldEntries.length; i++) {
+              var checkMatch = (oldEntries[i] == newEntries[i]) ? true:false;
+              expect(checkMatch).toBe(false);
+            }
         });
     });
 
